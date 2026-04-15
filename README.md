@@ -39,6 +39,9 @@ In a traditional feed-forward network, each layer is a function that transforms 
 <img width="650" height="650" alt="Screenshot 2026-04-15 at 7 07 06 PM" src="https://github.com/user-attachments/assets/c10afab9-711d-4c14-b8bb-644b01a2d7a9" />
 </p>
 
+*Figure 1. The Residual Stream architecture of a Transformer. Tokens are embedded into an initial vector x₀, which is then passed through alternating attention and MLP layers. Each layer reads from the stream, performs its operations, and adds its output back leaving the stream updated but intact. The final vector is projected through the unembedding matrix to produce the output logits*
+
+
 While a layer's internal computations are non-linear, the Residual stream itself maintains a highly linear structure. Every layer performs a linear operation to “read” from the residual stream. After performing its own operations - which may be non-linear - inside the residual stream, it again performs a linear operation to “write” its output onto the residual stream. A powerful consequence of this linearity is the emergence of Virtual Weight.
 
 ### Virtual Weights
@@ -47,6 +50,8 @@ Since the residual is linear in structure, we can mathematically skip the stream
 <p align="center">
 <img width="650" height="650" alt="Screenshot 2026-04-15 at 7 20 18 PM" src="https://github.com/user-attachments/assets/280c74bc-daf1-4b75-b2b5-bbed31d44a95" />
 </p>
+
+*Figure 2. Virtual Weights arising from the linearity of the Residual Stream.*
 
 ### Linear Representation
 It has been observed that many high-level concepts are represented as linear directions inside a model's representation space. By high-level concepts, we mean, for example, if the text is about an object, is it black or white? If it mentions a person, is the person male or female? etc..Because these concepts are linear directions, we can use them to control the model’s behaviors. This is known as model steering. If we identify the vector for a specific concept, we can manually add it to the residual stream during processing. For example, adding a “black” vector can force the sentence to be about a “black sofa” rather than a “white sofa”. Similarly, adding a “female” vector can force a model’s output to be about a “queen” rather than a “king”. This allows us to edit the model's "thoughts" in real-time without retraining its weights. Steering shows that these linear directions are not just correlations but rather causal to the model's decisions.
